@@ -29,8 +29,8 @@
 
 ## Chunking Strategy
 
-**Chunk size:**
-**Overlap:**
+**Chunk size:** 250
+**Overlap:** 50
 
 <!-- What about YOUR documents made you pick these numbers? Short posts and
      long sectioned guides don't want the same chunking, and "800 seemed
@@ -41,6 +41,9 @@
      more than pretending you got it right first time.
 
      Milestone 3. -->
+
+Trial and error was put into deciding the chunk and overlap sizes for this project. The goal was to have each forum response or at least each sentence or part of sentence, to be its own chunk. I noted that a question and reply was around 250 characters. I also wanted to ensure that the shortest chunk size is over 10 characters.
+
 
 ## Sample Chunks
 
@@ -53,30 +56,49 @@
 
      Milestone 3. -->
 
-**Chunk 1** — source: `` — produced by: ``
 
-```
-```
+**Chunk 1** — source: `thread_bike_commute.txt#0` — produced by: `chunker.py::split_documents`
 
-**Chunk 2** — source: `` — produced by: ``
 
-```
-```
+THREAD: Is a bike worth it for a 20 minute walk commute?
 
-**Chunk 3** — source: `` — produced by: ``
+--- reply 1 (14 votes) ---
+Yeah. Cuts an 18 minute walk to about 6. The thing nobody mentions is storage — covered bike parking exists at three buildings and is full by 9am at all three.
 
-```
-```
+---
 
-**Chunk 4** — source: `` — produced by: ``
 
-```
-```
+**Chunk 2** — source: `thread_first_gen.txt#1` — produced by: `chunker.py::split_documents`
 
-**Chunk 5** — source: `` — produced by: ``
 
-```
-```
+
+or it by name.
+
+--- reply 2 (41 votes) ---
+The thing I'd say: the unwritten rules are the hard part, not the coursework. Ask about the unwritten rules explicitly. People are happy to explain them and nobody volunteers them.
+
+--- reply 3 (16 votes) --
+
+**Chunk 3** — source: `thread_laptop_specs.txt#2` — produced by: `chunker.py::split_documents`
+
+years on an 8GB machine and it was fine until the last project, at which point it very much wasn't. 16 is the answer.
+
+**Chunk 4** — source: `thread_parking.txt#0` — produced by: `chunker.py::split_documents`
+
+THREAD: Worth getting a parking permit?
+
+--- reply 1 (15 votes) ---
+West lots sell out in about three days in August. East lot never sells out but it's a 12 minute walk, at which point you might as well have parked on the street.
+
+--- reply 2 (21 vot
+
+**Chunk 5** — source: `thread_roommate_conflict.txt#2` — produced by: `chunker.py::split_documents`
+
+ous cases.
+
+--- reply 3 (33 votes) ---
+Write down specifics before the meeting. 'It's not working' is hard to act on; 'guests four nights a week past 2am' is not.
+
 
 ## Sample Answer
 
