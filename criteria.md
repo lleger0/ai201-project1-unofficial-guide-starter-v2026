@@ -59,7 +59,7 @@ This prevents the sytem from hallucinating on topics it does not have any releva
 
 ---
 
-## 4. Chunks should be between 500 - 800 since files have around that amount of characters 
+## 4. The shortest chunk size should be over 10 characters
 
 <!-- YOU WRITE THIS ONE.
 
@@ -77,11 +77,11 @@ This prevents the sytem from hallucinating on topics it does not have any releva
 
 **Why this target:**
 
-This is to ensure that each chunk simulates ech file size and so that each chunk has usefull information that the model can use and not just a heading or phrase with no context.
+This is to ensure that every chunk has enough information to be able to answer a question. A chunk size under 10 characters would only hold a couple of words that by itself would not make any sense. 
 
 ---
 
-## 5. The model should be able to attempt to answer questions as long as they relate to the overall theme of its sources.
+## 5. The model should be able to attempt to answer questions as long as they relate to the overall theme of its sources
 
 <!-- YOU WRITE THIS ONE TOO.
 
