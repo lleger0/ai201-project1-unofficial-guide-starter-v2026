@@ -25,6 +25,7 @@ contains the answer.
 **Why this target:**
 <!-- e.g. "One of my questions is about a topic only two documents mention, so
      I expect that one to be hard." -->
+This target will help ensure that this system is right at least 80% of the time.
 
 ---
 
@@ -35,6 +36,8 @@ Every answer the system produces names at least one source document.
 **Why this target:**
 <!-- Why all five and not four? What about your setup makes that achievable —
      or what would have to go wrong for it not to be? -->
+
+It is important for AI models to not hallucinate any answers and ensure that they are always taking in information from credible sources. This also make sure that the model is always following the RAG framework (Retrieval-Augmented Generation).
 
 ---
 
@@ -52,10 +55,11 @@ in at least 4 of 5 tries.
 **Why this target:**
 <!-- What did your distances look like when you set the cutoff in Milestone 4?
      Was there a clean gap, or did the two groups overlap? -->
+This prevents the sytem from hallucinating on topics it does not have any relevant infomration for. If the AI model has no sources for a question, it should not attempt to answer the question.
 
 ---
 
-## 4. Something about your chunks
+## 4. Chunks should be between 500 - 800 since files have around that amount of characters 
 
 <!-- YOU WRITE THIS ONE.
 
@@ -73,11 +77,11 @@ in at least 4 of 5 tries.
 
 **Why this target:**
 
-
+This is to ensure that each chunk simulates ech file size and so that each chunk has usefull information that the model can use and not just a heading or phrase with no context.
 
 ---
 
-## 5. Your choice
+## 5. The model should be able to attempt to answer questions as long as they relate to the overall theme of its sources.
 
 <!-- YOU WRITE THIS ONE TOO.
 
@@ -91,7 +95,7 @@ in at least 4 of 5 tries.
 
 **Why this target:**
 
-
+The model should be able to answer based on key words in a question and use its sources to come up with an appropriate answer. For this particular project, the model should be able to answer all college related questions. 
 
 ---
 
