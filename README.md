@@ -27,7 +27,7 @@
 
      Milestone 5. -->
 
-     This is an AI system that uses student created threads to give advice on the college experience. The corpus used for this is "advice_threads". This system can answer questions on biking on campus, when to apply for internship, how to deal with classmates during group projects, and how to survive the winter on an east coast campus.
+This is an AI system that uses student created threads to give advice on the college experience. The corpus used for this is "advice_threads". This system can answer questions on biking on campus, when to apply for internship, how to deal with classmates during group projects, and how to survive the winter on an east coast campus.
 
 ## Chunking Strategy
 
