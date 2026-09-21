@@ -27,6 +27,8 @@
 
      Milestone 5. -->
 
+     This is an AI system that uses student created threads to give advice on the college experience. The corpus used for this is "advice_threads". This system can answer questions on biking on campus, when to apply for internship, how to deal with classmates during group projects, and how to survive the winter on an east coast campus.
+
 ## Chunking Strategy
 
 **Chunk size:** 250
@@ -160,8 +162,10 @@ I chose this as my relevance cutoff because one of my questions had a best dista
      Milestone 5. -->
 
 **1.**
+I asked Claude how it would test against my acceptance criteria. It helped me realize that the criteria 4 I had at the time had vague wording. 
 
 **2.**
+I asked Claude where it would put the threshold cutoff based on the best distance. It suggested 0.74 which helped me feel confident in my decision to put it at 0.73. 
 
 <!-- ── Stretch features ─────────────────────────────────────────────────────
      Doing one? Say so here BEFORE you start. A feature this README never
