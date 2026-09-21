@@ -27,10 +27,12 @@
 
      Milestone 5. -->
 
+     This is an AI system that uses student created threads to give advice on the college experience. The corpus used for this is "advice_threads". This system can answer questions on biking on campus, when to apply for internship, how to deal with classmates during group projects, and how to survive the winter on an east coast campus.
+
 ## Chunking Strategy
 
-**Chunk size:**
-**Overlap:**
+**Chunk size:** 250
+**Overlap:** 50
 
 <!-- What about YOUR documents made you pick these numbers? Short posts and
      long sectioned guides don't want the same chunking, and "800 seemed
@@ -41,6 +43,9 @@
      more than pretending you got it right first time.
 
      Milestone 3. -->
+
+Trial and error was put into deciding the chunk and overlap sizes for this project. The goal was to have each forum response or at least each sentence or part of sentence, to be its own chunk. I noted that a question and reply was around 250 characters. I also wanted to ensure that the shortest chunk size is over 10 characters.
+
 
 ## Sample Chunks
 
@@ -53,44 +58,73 @@
 
      Milestone 3. -->
 
-**Chunk 1** — source: `` — produced by: ``
 
-```
-```
+**Chunk 1** — source: `thread_bike_commute.txt#0` — produced by: `chunker.py::split_documents`
 
-**Chunk 2** — source: `` — produced by: ``
 
-```
-```
+THREAD: Is a bike worth it for a 20 minute walk commute?
 
-**Chunk 3** — source: `` — produced by: ``
+--- reply 1 (14 votes) ---
+Yeah. Cuts an 18 minute walk to about 6. The thing nobody mentions is storage — covered bike parking exists at three buildings and is full by 9am at all three.
 
-```
-```
+---
 
-**Chunk 4** — source: `` — produced by: ``
 
-```
-```
+**Chunk 2** — source: `thread_first_gen.txt#1` — produced by: `chunker.py::split_documents`
 
-**Chunk 5** — source: `` — produced by: ``
 
-```
-```
+
+or it by name.
+
+--- reply 2 (41 votes) ---
+The thing I'd say: the unwritten rules are the hard part, not the coursework. Ask about the unwritten rules explicitly. People are happy to explain them and nobody volunteers them.
+
+--- reply 3 (16 votes) --
+
+**Chunk 3** — source: `thread_laptop_specs.txt#2` — produced by: `chunker.py::split_documents`
+
+years on an 8GB machine and it was fine until the last project, at which point it very much wasn't. 16 is the answer.
+
+**Chunk 4** — source: `thread_parking.txt#0` — produced by: `chunker.py::split_documents`
+
+THREAD: Worth getting a parking permit?
+
+--- reply 1 (15 votes) ---
+West lots sell out in about three days in August. East lot never sells out but it's a 12 minute walk, at which point you might as well have parked on the street.
+
+--- reply 2 (21 vot
+
+**Chunk 5** — source: `thread_roommate_conflict.txt#2` — produced by: `chunker.py::split_documents`
+
+ous cases.
+
+--- reply 3 (33 votes) ---
+Write down specifics before the meeting. 'It's not working' is hard to act on; 'guests four nights a week past 2am' is not.
+
 
 ## Sample Answer
 
 <!-- One complete question and answer, pasted as text, with the source line
      visible. Milestone 4. -->
 
-**Question:**
+**Question:** "What is the best time to start looking for internships?"
 
-**Answer:**
+**Answer:** 
 
-```
-```
+(best distance 0.324, cutoff 0.73)
 
-**My relevance cutoff:**
+You should start looking earlier than feels reasonable, as large employers close applications in October and November for the following summer. Alternatively, smaller and local places hire in February and March. 
+
+Source: thread_internship_timing.txt
+
+Sources retrieved: thread_internship_timing.txt, thread_laundry_timing.txt, thread_pass_fail.txt, thread_sleep_schedule.txt
+
+1 model calls this session, 562 tokens (515 in, 47 out)
+
+
+**My relevance cutoff:** 0.73
+
+I chose this as my relevance cutoff because one of my questions had a best distance of 0.708 and I wanted to give it the best chance of being answered without allowing the AI to answer out of scope questions.
 
 <!-- The number you set in config.py, and how you got there.
 
@@ -103,7 +137,18 @@
 
 | Question | In corpus? | Best distance |
 |---|---|---|
-|  |  |  |
+| "What do students say about bike commuting on campus?" | Yes | 0.450 |
+| "What are some things that I can do to make my freshman year most memorable?" | Yes | 0.708 |
+| "What is the best time to start looking for internships?" | Yes | 0.324 |
+| "Is it possible to be part of too many clubs in college?" | Yes | 0.576 |
+| "Where are some quiet study spots on campus?" | Yes | 0.399 |
+| "What is the capital of Mongolia?" | No | 0.912 |
+| "How do I change the oil in a diesel engine?" | No | 0.917 |
+| "Who won the 1994 World Cup?" | No | 0.859 |
+| "What is the recommended dosage of ibuprofen for a headache?" | No | 0.775 |
+| "How do I write a for loop in Rust?" | No | 0.817 |
+
+
 
 ## How I Used AI
 
@@ -117,8 +162,10 @@
      Milestone 5. -->
 
 **1.**
+I asked Claude how it would test against my acceptance criteria. It helped me realize that the criteria 4 I had at the time had vague wording. 
 
 **2.**
+I asked Claude where it would put the threshold cutoff based on the best distance. It suggested 0.74 which helped me feel confident in my decision to put it at 0.73. 
 
 <!-- ── Stretch features ─────────────────────────────────────────────────────
      Doing one? Say so here BEFORE you start. A feature this README never
