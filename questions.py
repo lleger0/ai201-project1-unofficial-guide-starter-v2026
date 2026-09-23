@@ -23,11 +23,11 @@ names a target of "4 of 5", and four of three is not a thing.
 
 QUESTIONS = [
     # {"question": "...", "expects": "..."},
-    {"What do students say about bike commuting on campus?": "", "expects": " distances to bike commute. - bike parking, icy paths"},
-    {"What are some things that I can do to make my freshman year most memorable?": "", "expects": "clubs, homework, and assignments, pass/fail and declare it late — up to week eight"},
-    {"What is the best time to start looking for internships?": "", "expects": "Times internships go out. October, November"},
-    {"Is it possible to be part of too many clubs in college?": "", "expects": "How many clubs to be part of. - Depth in one is worth more"},
-    {"Where are some quiet study spots on campus?": "", "expects": "library"},
+    {"question": "What do students say about bike commuting on campus?", "expects": " distances to bike commute. - bike parking, icy paths"},
+    {"question": "What are some things that I can do to make my freshman year most memorable?", "expects": "clubs, homework, and assignments, pass/fail and declare it late — up to week eight"},
+    {"question": "What is the best time to start looking for internships?", "expects": "Times internships go out. October, November"},
+    {"question": "Is it possible to be part of too many clubs in college?", "expects": "How many clubs to be part of. - Depth in one is worth more"},
+    {"question": "Where are some quiet study spots on campus?", "expects": "library"},
 ]
 
 # I'm wondering if that las comma is a bug....
