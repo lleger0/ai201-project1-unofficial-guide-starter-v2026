@@ -207,6 +207,161 @@ I asked Claude where it would put the threshold cutoff based on the best distanc
      runs — the actual text your system produced, not a description of it.
      Name the file and function that produced it. -->
 
+     ### What do students say about bike commuting on campus? — run 1
+
+- Best distance: 0.4496 (passed the gate)
+- Sources retrieved: thread_bike_commute.txt, thread_commuting.txt
+
+```
+Based on the documents, students say that biking cuts an 18-minute walk down to about 6 minutes, but covered bike parking fills up by 9 am at all three buildings that have it. One student suggests using a cheap bike from September to November and walking the rest of the year. 
+
+Source: `thread_bike_commute.txt`
+```
+
+### What do students say about bike commuting on campus? — run 2
+
+- Best distance: 0.4496 (passed the gate)
+- Sources retrieved: thread_bike_commute.txt, thread_commuting.txt
+
+```
+Students say that biking cuts an 18-minute walk down to about 6 minutes, but covered bike parking fills up by 9:00 AM at all three buildings that have it. One student suggests using a cheap bike from September to November and walking the rest of the year (thread_bike_commute.txt).
+```
+
+### What do students say about bike commuting on campus? — run 3
+
+- Best distance: 0.4496 (passed the gate)
+- Sources retrieved: thread_bike_commute.txt, thread_commuting.txt
+
+```
+Based on the documents, students say that biking cuts an 18-minute walk down to about 6 minutes, but covered bike parking fills up by 9:00 AM at all three locations (from thread_bike_commute.txt). Additionally, one student suggests using a cheap bike from September to November and walking the rest of the year (from thread_bike_commute.txt).
+```
+
+### What are some things that I can do to make my freshman year most memorable? — run 1
+
+- Best distance: 0.7081 (passed the gate)
+- Sources retrieved: thread_changing_major.txt, thread_commuting.txt, thread_group_project.txt, thread_meal_plan_tier.txt, thread_printing.txt
+
+```
+I don't have enough information to answer your question, as the provided documents do not discuss how to make your freshman year memorable.
+```
+
+### What are some things that I can do to make my freshman year most memorable? — run 2
+
+- Best distance: 0.7081 (passed the gate)
+- Sources retrieved: thread_changing_major.txt, thread_commuting.txt, thread_group_project.txt, thread_meal_plan_tier.txt, thread_printing.txt
+
+```
+I don't have enough information to answer your question, as the provided documents do not discuss how to make your freshman year memorable.
+```
+
+### What are some things that I can do to make my freshman year most memorable? — run 3
+
+- Best distance: 0.7081 (passed the gate)
+- Sources retrieved: thread_changing_major.txt, thread_commuting.txt, thread_group_project.txt, thread_meal_plan_tier.txt, thread_printing.txt
+
+```
+I do not have enough information to answer this question.
+```
+
+### What is the best time to start looking for internships? — run 1
+
+- Best distance: 0.3238 (passed the gate)
+- Sources retrieved: thread_internship_timing.txt, thread_laundry_timing.txt, thread_pass_fail.txt, thread_sleep_schedule.txt
+
+```
+You should start looking earlier than feels reasonable, as large employers close applications in October and November for the following summer. Alternatively, smaller and local places hire in February and March. 
+
+Source: `thread_internship_timing.txt`
+```
+
+### What is the best time to start looking for internships? — run 2
+
+- Best distance: 0.3238 (passed the gate)
+- Sources retrieved: thread_internship_timing.txt, thread_laundry_timing.txt, thread_pass_fail.txt, thread_sleep_schedule.txt
+
+```
+You should start looking earlier than feels reasonable, as large employers close applications in October and November for the following summer. Alternatively, smaller and local places hire in February and March. 
+
+Source: `thread_internship_timing.txt`
+```
+
+### What is the best time to start looking for internships? — run 3
+
+- Best distance: 0.3238 (passed the gate)
+- Sources retrieved: thread_internship_timing.txt, thread_laundry_timing.txt, thread_pass_fail.txt, thread_sleep_schedule.txt
+
+```
+You should start looking earlier than feels reasonable, as large employers close applications in October and November for the following summer (thread_internship_timing.txt). Smaller and local places hire in February and March if you miss the autumn window (thread_internship_timing.txt). 
+
+Source: thread_internship_timing.txt
+```
+
+### Is it possible to be part of too many clubs in college? — run 1
+
+- Best distance: 0.5758 (passed the gate)
+- Sources retrieved: thread_changing_major.txt, thread_clubs.txt, thread_commuting.txt, thread_roommate_conflict.txt
+
+```
+Yes, having too many clubs is implied, as a reply suggests that depth in one club is worth more than breadth across five if you want a leadership position later. 
+
+Source: thread_clubs.txt
+```
+
+### Is it possible to be part of too many clubs in college? — run 2
+
+- Best distance: 0.5758 (passed the gate)
+- Sources retrieved: thread_changing_major.txt, thread_clubs.txt, thread_commuting.txt, thread_roommate_conflict.txt
+
+```
+Yes, having too many clubs is a common experience, as students often sign up for many more at the fair than the ones they actually attend (thread_clubs.txt). Additionally, focusing deeply on one club is considered more valuable for future leadership positions than spreading yourself across five (thread_clubs.txt).
+```
+
+### Is it possible to be part of too many clubs in college? — run 3
+
+- Best distance: 0.5758 (passed the gate)
+- Sources retrieved: thread_changing_major.txt, thread_clubs.txt, thread_commuting.txt, thread_roommate_conflict.txt
+
+```
+Yes, having too many clubs is a common experience, as people often sign up for about six clubs at the fair while only actually attending two. Additionally, focusing on depth in one club is worth more than having breadth across five if you want a leadership position later. (Source: thread_clubs.txt)
+```
+
+### Where are some quiet study spots on campus? — run 1
+
+- Best distance: 0.3994 (passed the gate)
+- Sources retrieved: thread_first_gen.txt, thread_roommate_conflict.txt, thread_study_spots.txt
+
+```
+Based on the provided documents, quiet study spots on campus include:
+
+* Ridgeway Café before 10am (from `thread_study_spots.txt`).
+* The open lounges on floors 2 through 5 of the science building, which are unlocked and almost always empty (from `thread_study_spots.txt`).
+* The library third floor, which is noted as the only place that reliably delivers silence (from `thread_study_spots.txt`).
+```
+
+### Where are some quiet study spots on campus? — run 2
+
+- Best distance: 0.3994 (passed the gate)
+- Sources retrieved: thread_first_gen.txt, thread_roommate_conflict.txt, thread_study_spots.txt
+
+```
+Based on the provided documents, quiet study spots include:
+- Ridgeway Café before 10am, which is empty, quiet, and has good coffee (thread_study_spots.txt).
+- Open lounges on floors 2 through 5 of the science building, which are unlocked and almost always empty (thread_study_spots.txt).
+- The library third floor, which is noted as the only place that reliably delivers silence if you need it (thread_study_spots.txt).
+- The group study rooms in the library, which can be booked by one person and used alone (thread_study_spots.txt).
+```
+
+### Where are some quiet study spots on campus? — run 3
+
+- Best distance: 0.3994 (passed the gate)
+- Sources retrieved: thread_first_gen.txt, thread_roommate_conflict.txt, thread_study_spots.txt
+
+```
+According to `thread_study_spots.txt`, good study spots include the Ridgeway Café before 10am, the open lounges on floors 2 through 5 of the science building, and the library's third floor if you need silence.
+```
+
+
+
 ## Verdicts
 
 <!-- MET or MISSED for each of the five, against the target you wrote last
