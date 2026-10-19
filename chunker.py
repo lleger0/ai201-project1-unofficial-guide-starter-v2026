@@ -22,6 +22,7 @@ to it, write down what you saw, and move on. That's a real observation about
 your pipeline, not giving up.
 """
 
+import re
 from dataclasses import dataclass
 
 import config
@@ -98,35 +99,112 @@ def split_documents(documents: list[Document]) -> list[Chunk]:
         splitting on a character count?
     """
 
-    # maybe this isn't too hard...
-    # so i'd want the split to stop before a space... me thinks.
+    # These documents are forum threads: a question, then the replies to it.
+    # A reply on its own is a poor chunk — "16 is the answer" has none of the
+    # words a question about laptops would match against, and the model reading
+    # it can't tell what was asked. So every chunk here is a pair: the thread's
+    # question, plus exactly one reply to it.
+    #
+    # That means the question is repeated across every chunk from a thread,
+    # which is the point. Each chunk still carries a different answer, and each
+    # one can be retrieved and understood on its own.
+    #
+    # Chunks still break only at the end of a reply, or — for a reply that runs
+    # long — at the end of a sentence, so nothing is cut mid-thought and there
+    # is no overlap to paper over a bad cut.
 
-    chunk_size = 250
-    overlap = 50
+    # Every response is introduced by a line like "--- reply 2 (21 votes) ---".
+    # The group around it keeps that line in the split output, so each chunk can
+    # be labelled with the reply it came from — the vote count included.
+    reply_marker = re.compile(
+        r"^([ \t]*-{2,}\s*reply\b.*?-{2,}[ \t]*)$", re.MULTILINE | re.IGNORECASE
+    )
+    # A sentence ends at . ! or ? — plus any closing quote or bracket — followed
+    # by whitespace. Good enough for prose typed into a forum box.
+    sentence_end = re.compile(r"(?<=[.!?])[\"')\]]*\s+")
+    # How much of one reply rides in a single chunk, before the question is
+    # added on top. Most replies here are well under it and stay whole.
+    max_reply_chars = 600
 
-    chunks:list[Chunk] = []
+    chunks: list[Chunk] = []
+
     for doc in documents:
-        start = 0
         index = 0
-        while start < len(doc.text):
-            piece = doc.text[start : start + chunk_size].strip()
-            if piece:
+
+        # Split the thread at the reply markers. Because the pattern captures,
+        # this comes back as [question, marker, reply, marker, reply, ...]: the
+        # text before the first marker is the "THREAD: ..." question line, and
+        # after it the markers and replies alternate.
+        parts = reply_marker.split(doc.text)
+        question = parts[0].strip()
+
+        # Pair each marker with the reply that follows it.
+        replies = [
+            (parts[i].strip(), parts[i + 1].strip())
+            for i in range(1, len(parts) - 1, 2)
+            if parts[i + 1].strip()
+        ]
+
+        # A document with no reply markers (a guide, a single post) has neither
+        # a question nor a marker to pair anything with, so it is chunked as it
+        # stands. That keeps this working on the other corpora.
+        if not replies:
+            if not question:
+                continue
+            question, replies = "", [("", question)]
+
+        for marker, reply in replies:
+            # Short enough to stand as one chunk: the question and the whole
+            # reply together.
+            if len(reply) <= max_reply_chars:
+                pieces = [reply]
+            else:
+                # Too long, so fall back to sentence boundaries: walk the
+                # sentences and start a new piece whenever adding the next one
+                # would push past the limit. A single sentence longer than the
+                # limit is kept whole rather than cut in half. Every piece gets
+                # the question and the marker, so each one still reads on its
+                # own.
+                sentences: list[str] = []
+                start = 0
+                for match in sentence_end.finditer(reply):
+                    sentence = reply[start : match.end()].strip()
+                    if sentence:
+                        sentences.append(sentence)
+                    start = match.end()
+                tail = reply[start:].strip()
+                if tail:
+                    sentences.append(tail)
+
+                pieces = []
+                current = ""
+                for sentence in sentences:
+                    if current and len(current) + 1 + len(sentence) > max_reply_chars:
+                        pieces.append(current)
+                        current = sentence
+                    else:
+                        current = f"{current} {sentence}" if current else sentence
+                if current:
+                    pieces.append(current)
+
+            for piece in pieces:
+                # Lay the chunk out the way the source file does: the question,
+                # a blank line, then the reply under its own marker line.
+                prefix = f"{question}\n\n" if question else ""
+                if marker:
+                    prefix += f"{marker}\n"
+                text = f"{prefix}{piece}"
                 chunks.append(
                     Chunk(
-                        text=piece,
+                        text=text,
                         source=doc.source,
                         index=index,
                         produced_by="chunker.py::split_documents",
                     )
                 )
                 index += 1
-            start += chunk_size - overlap
 
     return chunks
-
-    # set chunk and set overlap....
-
-    #return fallback_split(documents)
 
 
 def describe(chunks: list[Chunk]) -> str:

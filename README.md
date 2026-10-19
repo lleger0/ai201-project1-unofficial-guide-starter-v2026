@@ -170,6 +170,9 @@ I asked Claude how it would test against my acceptance criteria. It helped me re
 **2.**
 I asked Claude where it would put the threshold cutoff based on the best distance. It suggested 0.74 which helped me feel confident in my decision to put it at 0.73. 
 
+**3.**
+I used Claude code to rewrite chunker.py so that each chunk has a more defined goal.
+
 <!-- ── Stretch features ─────────────────────────────────────────────────────
      Doing one? Say so here BEFORE you start. A feature this README never
      claims earns nothing.
@@ -197,17 +200,21 @@ I asked Claude where it would put the threshold cutoff based on the best distanc
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunk contains the answer | 4 of 5 | 4/5 | 4/5 | 4/5 | MET |
+| 2. Every answer names a source | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 4. The shortest chunk size should be over 10 characters | 5 of 5| 5/5| 5/5 | 5/5 | MET |
+| 5. All questions that pass the relevance gate should get answered.| 5 of 5 | 4/5 | 4/5 | 4/5 | MISSED |
+
+
 
 <!-- Underneath, paste the REAL output for each criterion from one of your
      runs — the actual text your system produced, not a description of it.
      Name the file and function that produced it. -->
 
-     ### What do students say about bike commuting on campus? — run 1
+
+     
+### What do students say about bike commuting on campus? — run 1
 
 - Best distance: 0.4496 (passed the gate)
 - Sources retrieved: thread_bike_commute.txt, thread_commuting.txt
@@ -375,10 +382,10 @@ According to `thread_study_spots.txt`, good study spots include the Ridgeway Caf
 
 | # | Criterion | Verdict | How I decided |
 |---|---|---|---|
-| 1 |  |  |  |
-| 2 |  |  |  |
-| 3 |  |  |  |
-| 4 |  |  |  |
+| 1 |Retrieved chunks contain the answer |  MET | Amoung the 3 attemps at responding the question each response has consistent answers |
+| 2 | Every answer names a source | MET | Every question in every run mentions a source. |
+| 3 | The relevance gate stops out-of-corpus questions| MET | Refuses to respond to out of corpus questions. |
+| 4 | The shortest chunk size should be over 10 characters | MET |python app.py index shows the shortest chunk which is 28   |
 | 5 |  |  |  |
 
 ## Diagnoses
