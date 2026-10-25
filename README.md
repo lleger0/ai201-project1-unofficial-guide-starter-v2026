@@ -386,7 +386,7 @@ According to `thread_study_spots.txt`, good study spots include the Ridgeway Caf
 | 2 | Every answer names a source | MET | Every question in every run mentions a source. |
 | 3 | The relevance gate stops out-of-corpus questions| MET | Refuses to respond to out of corpus questions. |
 | 4 | The shortest chunk size should be over 10 characters | MET |python app.py index shows the shortest chunk which is 28   |
-| 5 |  |  |  |
+| 5 |  All questions that pass the relevance gate should get answered. | MISSED | Question 2 does not get answered despite passing the gate and having a distance of 0.6136 |
 
 ## Diagnoses
 
@@ -407,6 +407,78 @@ According to `thread_study_spots.txt`, good study spots include the Ridgeway Caf
      low, and which one you'd tighten and to what.
 
      Milestone 3. -->
+
+The issue seems to be in the generation step.
+
+This is what happens when the question is run:
+
+``` 
+python app.py ask "What are some things I can do to make my freshmen year most memorable?" --show-prompt
+  (best distance 0.602, cutoff 0.73)
+
+======================================================================
+System instruction sent with the prompt
+======================================================================
+You answer questions using only the documents provided to you.
+
+Rules:
+- Use only the information in the documents below. Do not use anything you know from elsewhere.
+- If the documents don't cover the question, say you don't have enough information. Do not guess.
+- Name the document your answer came from, using the filename given in each excerpt.
+- Be brief. Two or three sentences is usually enough.
+
+======================================================================
+The assembled prompt, exactly as sent
+======================================================================
+Documents:
+
+[from thread_first_year_regret.txt]
+THREAD: What do you wish you'd known in first year?
+
+--- reply 2 (28 votes) ---
+That you can take a course pass/fail and declare it late — up to week eight. I carried a grade I didn't need to.
+
+[from thread_first_gen.txt]
+THREAD: Anything specific for first-generation students?
+
+--- reply 2 (41 votes) ---
+The thing I'd say: the unwritten rules are the hard part, not the coursework. Ask about the unwritten rules explicitly. People are happy to explain them and nobody volunteers them.
+
+[from thread_first_year_regret.txt]
+THREAD: What do you wish you'd known in first year?
+
+--- reply 4 (52 votes) ---
+Honestly: that nobody is watching as closely as you think. I spent a year worried about looking like I knew what I was doing.
+
+[from thread_first_gen.txt]
+THREAD: Anything specific for first-generation students?
+
+--- reply 3 (16 votes) ---
+Emergency fund for textbooks and travel exists and is not means-tested beyond a short form.
+
+[from thread_changing_major.txt]
+THREAD: How hard is it to change major in second year?
+
+--- reply 3 (19 votes) ---
+Talk to the department adviser for the major you want, not your current one. They know the exceptions.
+
+---
+
+Question: What are some things I can do to make my freshmen year most memorable?
+
+Answer using only the documents above, and name the file you used.
+======================================================================
+
+I do not have enough information to answer what you can do to make your freshman year most memorable.
+
+Sources retrieved: thread_changing_major.txt, thread_first_gen.txt, thread_first_year_regret.txt
+
+0 model calls this session, 1 served from cache
+```
+     
+Appropriate chunks that would be able to answer the questions are retrieved. However when its time to answer the question, an appropriate response is not formed. Therefore I would say the generation step is the issue.
+
+Issue is generation or retrieval. Maybe if it retrieved different chunks the AI would have a better time answering the question. Maybe the issue is embedding. The system might not be able to properly understand the question.
 
 ## The Improvement
 
