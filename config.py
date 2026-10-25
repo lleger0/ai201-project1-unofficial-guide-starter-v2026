@@ -15,7 +15,6 @@ from dotenv import load_dotenv
 ROOT = Path(__file__).parent
 load_dotenv(ROOT / ".env")
 
-
 # ─── The corpus you're working with ──────────────────────────────────────────
 # Change this to switch corpora, or pass --corpus on the command line.
 # Options are the folder names inside corpora/. See corpora/README.md.
@@ -46,6 +45,27 @@ TOP_K = 5               # how many chunks to pull back per question
 THRESHOLD = 0.73
 # change threshold from 0.6 to 0.73
 
+# How chunks are found. Change it here, set AI201_RETRIEVAL in .env, or pass
+# --retrieval on the command line.
+#
+#   "semantic"  embeddings only, nearest meaning first (the starter's behaviour)
+#   "hybrid"    embeddings AND BM25 keyword scoring, merged with Reciprocal
+#               Rank Fusion. Helps when a question hinges on an exact word —
+#               a course code, a building name — that embeddings blur.
+#
+# Either way every result still carries its cosine distance, so the gate and
+# THRESHOLD above keep meaning the same thing.
+RETRIEVAL = os.getenv("AI201_RETRIEVAL", "semantic")
+
+# Reciprocal Rank Fusion constant. Each list contributes 1 / (RRF_K + rank).
+# 60 is the value from the original RRF paper; larger flattens the difference
+# between rank 1 and rank 10.
+RRF_K = 60
+
+# How many candidates each side (semantic and BM25) nominates before fusing.
+# Has to be bigger than TOP_K or BM25 never gets a chance to promote anything.
+HYBRID_CANDIDATES = 20
+
 # ─── Models ──────────────────────────────────────────────────────────────────
 # Embeddings run on your own machine and cost no API quota.
 # Only generation calls out to a service.
@@ -57,6 +77,9 @@ THRESHOLD = 0.73
 # stretch option — switches to loading that model from Hugging Face instead,
 # which needs `pip install 'sentence-transformers>=3.4,<3.5'` first. store.py
 # says so with a real error message rather than a stack trace if you forget.
+#
+# BM25 is NOT an embedding model — it's a keyword scorer. It lives in
+# RETRIEVAL above, not here.
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 MODEL = os.getenv("AI201_MODEL", "gemini-3.5-flash-lite")
 

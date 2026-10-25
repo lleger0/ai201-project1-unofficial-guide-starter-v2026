@@ -476,15 +476,15 @@ Sources retrieved: thread_changing_major.txt, thread_first_gen.txt, thread_first
 0 model calls this session, 1 served from cache
 ```
      
-Appropriate chunks that would be able to answer the questions are retrieved. However when its time to answer the question, an appropriate response is not formed. Therefore I would say the generation step is the issue.
+Appropriate chunks that would be able to answer the questions are retrieved. However, when its time to answer the question, an appropriate response is not formed. Therefore I would say the generation step is the issue.
 
-Issue is generation or retrieval. Maybe if it retrieved different chunks the AI would have a better time answering the question. Maybe the issue is embedding. The system might not be able to properly understand the question.
+Issue is generation or retrieval. Maybe if it retrieved different chunks the AI would have a better time answering the question. Maybe the issue is embedding. The system might not be able to properly understand the question and parse the question to come up with an answer that would apply to it.
 
 ## The Improvement
 
-**What I changed:**
+**What I changed:** I decided to implement BM 25 for hybrid search. Use `--retrieval hybrid` to use the 2nd embedding model
 
-**Why I picked it:**
+**Why I picked it:** I had deduced that chunking was not the issue and that maybe the AI was simply understanding the question that it was being asked. Because of that it made sense to add a second embedding model.
 
 <!-- Connect it to a specific diagnosis above in one sentence. If you can't,
      you picked a fix because it sounded impressive. -->
@@ -494,15 +494,24 @@ Issue is generation or retrieval. Maybe if it retrieved different chunks the AI 
 <!-- Same format, same five criteria, three runs each.
      `python run_eval.py --label after` -->
 
-| Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
+<!-- | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
 | 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
 | 2. Every answer names a source | 5 of 5 |  |  |  |  |
 | 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
 | 4. | | | | | |
-| 5. | | | | | |
+| 5. | | | | | | -->
 
-**Did it help?**
+| Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
+|---|---|---|---|---|---|
+| 1. Retrieved chunk contains the answer | 4 of 5 | 4/5 | 4/5 | 4/5 | MISSED |
+| 2. Every answer names a source | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 4. The shortest chunk size should be over 10 characters | 5 of 5| 5/5| 5/5 | 5/5 | MET |
+| 5. All questions that pass the relevance gate should get answered.| 5 of 5 | 4/5 | 4/5 | 4/5 | MET |
+
+
+**Did it help?** No. Now the model is refusing to answer all question.
 
 <!-- Say plainly whether it did, and how you know. If it made things worse,
      say that — a change that backfired, honestly reported, earns full credit

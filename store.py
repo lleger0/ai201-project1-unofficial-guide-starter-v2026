@@ -17,7 +17,9 @@ rest of the project if they were wrong:
    install needs neither PyTorch nor a reachable Hugging Face. See `_embedder`.
 """
 
+import math
 import os
+import re
 import shutil
 from dataclasses import dataclass
 
@@ -42,6 +44,9 @@ class Result:
     label: str
     distance: float   # LOWER IS BETTER. 0.3 is close, 0.9 is unrelated.
     produced_by: str
+    # Only filled in by hybrid search. HIGHER IS BETTER for both.
+    bm25_score: float | None = None   # raw keyword score; 0 means no shared words
+    fused_score: float | None = None  # Reciprocal Rank Fusion score; sets the order
 
 
 _model = None
@@ -178,18 +183,33 @@ def build_index(
     return len(chunks)
 
 
+def _result(text: str, meta: dict, distance: float) -> Result:
+    return Result(
+        text=text,
+        source=str(meta.get("source", "unknown")),
+        label=f"{meta.get('source', 'unknown')}#{meta.get('index', 0)}",
+        distance=float(distance),
+        produced_by=str(meta.get("produced_by", "unknown")),
+    )
+
+
 def search(
     question: str,
     top_k: int | None = None,
     corpus: str | None = None,
     variant: str = "default",
+    mode: str | None = None,
 ) -> list[Result]:
     """
-    Retrieve the chunks closest in meaning to a question.
+    Retrieve the chunks most relevant to a question.
 
-    Returns them nearest-first, each with its distance.
+    `mode` is "semantic" or "hybrid"; left out, it follows config.RETRIEVAL.
+    Semantic results come back nearest-first. Hybrid results come back in
+    fused order, which is not always nearest-first — but every result still
+    carries its cosine distance, so the gate works the same either way.
     """
     top_k = top_k or config.TOP_K
+    mode = mode or config.RETRIEVAL
     name = config.collection_name(corpus, variant)
 
     try:
@@ -199,24 +219,126 @@ def search(
             f"No index called '{name}'. Run `python app.py index` first."
         ) from exc
 
+    if mode == "hybrid":
+        return _hybrid_search(question, top_k, collection)
+    if mode != "semantic":
+        raise ValueError(f"Unknown retrieval mode {mode!r}: use 'semantic' or 'hybrid'.")
+
     raw = collection.query(
         query_embeddings=embed([question]),
         n_results=min(top_k, collection.count()),
     )
 
-    results: list[Result] = []
-    for text, meta, distance in zip(
-        raw["documents"][0], raw["metadatas"][0], raw["distances"][0]
-    ):
-        results.append(
-            Result(
-                text=text,
-                source=str(meta.get("source", "unknown")),
-                label=f"{meta.get('source', 'unknown')}#{meta.get('index', 0)}",
-                distance=float(distance),
-                produced_by=str(meta.get("produced_by", "unknown")),
-            )
+    return [
+        _result(text, meta, distance)
+        for text, meta, distance in zip(
+            raw["documents"][0], raw["metadatas"][0], raw["distances"][0]
         )
+    ]
+
+
+# ─── Hybrid search: BM25 + embeddings ────────────────────────────────────────
+#
+# Embeddings match meaning; BM25 matches words. They fail differently:
+# embeddings blur "CS 210" and "CS 340" together because they *mean* similar
+# things, while BM25 has no idea "dorm" and "residence hall" are related.
+# Running both and fusing the two rankings covers each one's blind spot.
+
+# Words so common they'd only add noise to keyword matching. BM25's IDF already
+# down-weights them, but question phrasing ("what do students say about...")
+# is heavy with them, so dropping them up front keeps scores readable.
+_STOPWORDS = frozenset(
+    "a an and are as at be but by can do does for from how i if in is it its "
+    "me my of on or so that the their there they this to was what when where "
+    "which who why will with you your should would could about any".split()
+)
+
+# One BM25 index per collection, built lazily from what's already in Chroma so
+# it always matches the chunks you indexed. Keyed on name and chunk count so a
+# re-index in the same process is noticed.
+_bm25_cache: dict[str, tuple[int, object, list[str]]] = {}
+
+
+def _tokenize(text: str) -> list[str]:
+    return [w for w in re.findall(r"[a-z0-9]+", text.lower()) if w not in _STOPWORDS]
+
+
+def _bm25_for(collection):
+    from rank_bm25 import BM25Okapi
+
+    count = collection.count()
+    cached = _bm25_cache.get(collection.name)
+    if cached is not None and cached[0] == count:
+        return cached[1], cached[2]
+
+    data = collection.get(include=["documents"])
+    bm25 = BM25Okapi([_tokenize(doc) for doc in data["documents"]])
+    _bm25_cache[collection.name] = (count, bm25, data["ids"])
+    return bm25, data["ids"]
+
+
+def _cosine_distance(a, b) -> float:
+    a = [float(x) for x in a]
+    b = [float(x) for x in b]
+    dot = sum(x * y for x, y in zip(a, b))
+    norm = math.sqrt(sum(x * x for x in a)) * math.sqrt(sum(y * y for y in b))
+    return 1.0 - dot / norm if norm else 1.0
+
+
+def _hybrid_search(question: str, top_k: int, collection) -> list[Result]:
+    count = collection.count()
+    if count == 0:
+        return []
+    pool = min(count, max(config.HYBRID_CANDIDATES, top_k))
+    question_vector = embed([question])
+
+    # Semantic side: the nearest `pool` chunks, with their real distances.
+    raw = collection.query(query_embeddings=question_vector, n_results=pool)
+    found = {
+        chunk_id: (text, meta, float(distance))
+        for chunk_id, text, meta, distance in zip(
+            raw["ids"][0], raw["documents"][0], raw["metadatas"][0], raw["distances"][0]
+        )
+    }
+    semantic_ranking = raw["ids"][0]
+
+    # Keyword side: the `pool` best BM25 scores, ignoring chunks that share no
+    # words with the question at all.
+    bm25, ids = _bm25_for(collection)
+    scores = bm25.get_scores(_tokenize(question))
+    bm25_by_id = {chunk_id: float(s) for chunk_id, s in zip(ids, scores)}
+    keyword_ranking = [
+        chunk_id
+        for chunk_id in sorted(bm25_by_id, key=bm25_by_id.get, reverse=True)[:pool]
+        if bm25_by_id[chunk_id] > 0
+    ]
+
+    # Reciprocal Rank Fusion: each list votes 1 / (k + rank). Uses ranks, not
+    # raw scores, because cosine distances and BM25 scores aren't on the same
+    # scale and can't be added directly.
+    fused: dict[str, float] = {}
+    for ranking in (semantic_ranking, keyword_ranking):
+        for rank, chunk_id in enumerate(ranking, 1):
+            fused[chunk_id] = fused.get(chunk_id, 0.0) + 1.0 / (config.RRF_K + rank)
+    winners = sorted(fused, key=fused.get, reverse=True)[:top_k]
+
+    # Chunks BM25 pulled in that the semantic side never saw still need a
+    # cosine distance, or the gate would have nothing to judge them by.
+    missing = [chunk_id for chunk_id in winners if chunk_id not in found]
+    if missing:
+        extra = collection.get(ids=missing, include=["documents", "metadatas", "embeddings"])
+        for chunk_id, text, meta, vector in zip(
+            extra["ids"], extra["documents"], extra["metadatas"], extra["embeddings"]
+        ):
+            found[chunk_id] = (text, meta, _cosine_distance(question_vector[0], vector))
+
+    results = []
+    for chunk_id in winners:
+        text, meta, distance = found[chunk_id]
+        result = _result(text, meta, distance)
+        result.bm25_score = bm25_by_id.get(chunk_id, 0.0)
+        result.fused_score = fused[chunk_id]
+        results.append(result)
     return results
 
 
