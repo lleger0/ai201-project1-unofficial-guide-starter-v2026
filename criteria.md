@@ -95,7 +95,13 @@ This is to ensure that every chunk has enough information to be able to answer a
 
 **Why this target:**
 
-The model should be able to answer based on key words in a question and use its sources to come up with an appropriate answer. For this particular project, the model should be able to answer all college related questions. 
+The model should be able to answer based on key words in a question and use its sources to come up with an appropriate answer. For this particular project, the model should be able to answer all college related questions.
+
+
+## Updated 5. All questions that pass the relevance gate should get answered. 
+
+**Why this target:**
+This is a rewording of criteria 5. This criteria is for the existence of borderline in scope questions. Rewording this criteria lets it be more testable. 
 
 ---
 

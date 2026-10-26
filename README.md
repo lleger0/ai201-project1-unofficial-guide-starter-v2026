@@ -170,6 +170,12 @@ I asked Claude how it would test against my acceptance criteria. It helped me re
 **2.**
 I asked Claude where it would put the threshold cutoff based on the best distance. It suggested 0.74 which helped me feel confident in my decision to put it at 0.73. 
 
+**3.**
+I used Claude code to rewrite chunker.py so that each chunk has a more defined goal.
+
+**4.**
+I used Claude code to implement bm25 after spending a couple hours trying to figure out how to do it myself. Unfortunately, I think claude might have made an error during the implementation.
+
 <!-- ── Stretch features ─────────────────────────────────────────────────────
      Doing one? Say so here BEFORE you start. A feature this README never
      claims earns nothing.
@@ -197,15 +203,174 @@ I asked Claude where it would put the threshold cutoff based on the best distanc
 
 | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
-| 2. Every answer names a source | 5 of 5 |  |  |  |  |
-| 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
-| 4. | | | | | |
-| 5. | | | | | |
+| 1. Retrieved chunk contains the answer | 4 of 5 | 4/5 | 4/5 | 4/5 | MET |
+| 2. Every answer names a source | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 4. The shortest chunk size should be over 10 characters | 5 of 5| 5/5| 5/5 | 5/5 | MET |
+| 5. All questions that pass the relevance gate should get answered.| 5 of 5 | 4/5 | 4/5 | 4/5 | MISSED |
+
+
 
 <!-- Underneath, paste the REAL output for each criterion from one of your
      runs — the actual text your system produced, not a description of it.
      Name the file and function that produced it. -->
+
+
+     
+### What do students say about bike commuting on campus? — run 1
+
+- Best distance: 0.4496 (passed the gate)
+- Sources retrieved: thread_bike_commute.txt, thread_commuting.txt
+
+```
+Based on the documents, students say that biking cuts an 18-minute walk down to about 6 minutes, but covered bike parking fills up by 9 am at all three buildings that have it. One student suggests using a cheap bike from September to November and walking the rest of the year. 
+
+Source: `thread_bike_commute.txt`
+```
+
+### What do students say about bike commuting on campus? — run 2
+
+- Best distance: 0.4496 (passed the gate)
+- Sources retrieved: thread_bike_commute.txt, thread_commuting.txt
+
+```
+Students say that biking cuts an 18-minute walk down to about 6 minutes, but covered bike parking fills up by 9:00 AM at all three buildings that have it. One student suggests using a cheap bike from September to November and walking the rest of the year (thread_bike_commute.txt).
+```
+
+### What do students say about bike commuting on campus? — run 3
+
+- Best distance: 0.4496 (passed the gate)
+- Sources retrieved: thread_bike_commute.txt, thread_commuting.txt
+
+```
+Based on the documents, students say that biking cuts an 18-minute walk down to about 6 minutes, but covered bike parking fills up by 9:00 AM at all three locations (from thread_bike_commute.txt). Additionally, one student suggests using a cheap bike from September to November and walking the rest of the year (from thread_bike_commute.txt).
+```
+
+### What are some things that I can do to make my freshman year most memorable? — run 1
+
+- Best distance: 0.7081 (passed the gate)
+- Sources retrieved: thread_changing_major.txt, thread_commuting.txt, thread_group_project.txt, thread_meal_plan_tier.txt, thread_printing.txt
+
+```
+I don't have enough information to answer your question, as the provided documents do not discuss how to make your freshman year memorable.
+```
+
+### What are some things that I can do to make my freshman year most memorable? — run 2
+
+- Best distance: 0.7081 (passed the gate)
+- Sources retrieved: thread_changing_major.txt, thread_commuting.txt, thread_group_project.txt, thread_meal_plan_tier.txt, thread_printing.txt
+
+```
+I don't have enough information to answer your question, as the provided documents do not discuss how to make your freshman year memorable.
+```
+
+### What are some things that I can do to make my freshman year most memorable? — run 3
+
+- Best distance: 0.7081 (passed the gate)
+- Sources retrieved: thread_changing_major.txt, thread_commuting.txt, thread_group_project.txt, thread_meal_plan_tier.txt, thread_printing.txt
+
+```
+I do not have enough information to answer this question.
+```
+
+### What is the best time to start looking for internships? — run 1
+
+- Best distance: 0.3238 (passed the gate)
+- Sources retrieved: thread_internship_timing.txt, thread_laundry_timing.txt, thread_pass_fail.txt, thread_sleep_schedule.txt
+
+```
+You should start looking earlier than feels reasonable, as large employers close applications in October and November for the following summer. Alternatively, smaller and local places hire in February and March. 
+
+Source: `thread_internship_timing.txt`
+```
+
+### What is the best time to start looking for internships? — run 2
+
+- Best distance: 0.3238 (passed the gate)
+- Sources retrieved: thread_internship_timing.txt, thread_laundry_timing.txt, thread_pass_fail.txt, thread_sleep_schedule.txt
+
+```
+You should start looking earlier than feels reasonable, as large employers close applications in October and November for the following summer. Alternatively, smaller and local places hire in February and March. 
+
+Source: `thread_internship_timing.txt`
+```
+
+### What is the best time to start looking for internships? — run 3
+
+- Best distance: 0.3238 (passed the gate)
+- Sources retrieved: thread_internship_timing.txt, thread_laundry_timing.txt, thread_pass_fail.txt, thread_sleep_schedule.txt
+
+```
+You should start looking earlier than feels reasonable, as large employers close applications in October and November for the following summer (thread_internship_timing.txt). Smaller and local places hire in February and March if you miss the autumn window (thread_internship_timing.txt). 
+
+Source: thread_internship_timing.txt
+```
+
+### Is it possible to be part of too many clubs in college? — run 1
+
+- Best distance: 0.5758 (passed the gate)
+- Sources retrieved: thread_changing_major.txt, thread_clubs.txt, thread_commuting.txt, thread_roommate_conflict.txt
+
+```
+Yes, having too many clubs is implied, as a reply suggests that depth in one club is worth more than breadth across five if you want a leadership position later. 
+
+Source: thread_clubs.txt
+```
+
+### Is it possible to be part of too many clubs in college? — run 2
+
+- Best distance: 0.5758 (passed the gate)
+- Sources retrieved: thread_changing_major.txt, thread_clubs.txt, thread_commuting.txt, thread_roommate_conflict.txt
+
+```
+Yes, having too many clubs is a common experience, as students often sign up for many more at the fair than the ones they actually attend (thread_clubs.txt). Additionally, focusing deeply on one club is considered more valuable for future leadership positions than spreading yourself across five (thread_clubs.txt).
+```
+
+### Is it possible to be part of too many clubs in college? — run 3
+
+- Best distance: 0.5758 (passed the gate)
+- Sources retrieved: thread_changing_major.txt, thread_clubs.txt, thread_commuting.txt, thread_roommate_conflict.txt
+
+```
+Yes, having too many clubs is a common experience, as people often sign up for about six clubs at the fair while only actually attending two. Additionally, focusing on depth in one club is worth more than having breadth across five if you want a leadership position later. (Source: thread_clubs.txt)
+```
+
+### Where are some quiet study spots on campus? — run 1
+
+- Best distance: 0.3994 (passed the gate)
+- Sources retrieved: thread_first_gen.txt, thread_roommate_conflict.txt, thread_study_spots.txt
+
+```
+Based on the provided documents, quiet study spots on campus include:
+
+* Ridgeway Café before 10am (from `thread_study_spots.txt`).
+* The open lounges on floors 2 through 5 of the science building, which are unlocked and almost always empty (from `thread_study_spots.txt`).
+* The library third floor, which is noted as the only place that reliably delivers silence (from `thread_study_spots.txt`).
+```
+
+### Where are some quiet study spots on campus? — run 2
+
+- Best distance: 0.3994 (passed the gate)
+- Sources retrieved: thread_first_gen.txt, thread_roommate_conflict.txt, thread_study_spots.txt
+
+```
+Based on the provided documents, quiet study spots include:
+- Ridgeway Café before 10am, which is empty, quiet, and has good coffee (thread_study_spots.txt).
+- Open lounges on floors 2 through 5 of the science building, which are unlocked and almost always empty (thread_study_spots.txt).
+- The library third floor, which is noted as the only place that reliably delivers silence if you need it (thread_study_spots.txt).
+- The group study rooms in the library, which can be booked by one person and used alone (thread_study_spots.txt).
+```
+
+### Where are some quiet study spots on campus? — run 3
+
+- Best distance: 0.3994 (passed the gate)
+- Sources retrieved: thread_first_gen.txt, thread_roommate_conflict.txt, thread_study_spots.txt
+
+```
+According to `thread_study_spots.txt`, good study spots include the Ridgeway Café before 10am, the open lounges on floors 2 through 5 of the science building, and the library's third floor if you need silence.
+```
+
+
 
 ## Verdicts
 
@@ -220,11 +385,11 @@ I asked Claude where it would put the threshold cutoff based on the best distanc
 
 | # | Criterion | Verdict | How I decided |
 |---|---|---|---|
-| 1 |  |  |  |
-| 2 |  |  |  |
-| 3 |  |  |  |
-| 4 |  |  |  |
-| 5 |  |  |  |
+| 1 |Retrieved chunks contain the answer |  MET | Amoung the 3 attemps at responding the question each response has consistent answers |
+| 2 | Every answer names a source | MET | Every question in every run mentions a source. |
+| 3 | The relevance gate stops out-of-corpus questions| MET | Refuses to respond to out of corpus questions. |
+| 4 | The shortest chunk size should be over 10 characters | MET |python app.py index shows the shortest chunk which is 28   |
+| 5 |  All questions that pass the relevance gate should get answered. | MISSED | Question 2 does not get answered despite passing the gate and having a distance of 0.6136 |
 
 ## Diagnoses
 
@@ -246,11 +411,83 @@ I asked Claude where it would put the threshold cutoff based on the best distanc
 
      Milestone 3. -->
 
+The issue seems to be in the generation step.
+
+This is what happens when the question is run:
+
+``` 
+python app.py ask "What are some things I can do to make my freshmen year most memorable?" --show-prompt
+  (best distance 0.602, cutoff 0.73)
+
+======================================================================
+System instruction sent with the prompt
+======================================================================
+You answer questions using only the documents provided to you.
+
+Rules:
+- Use only the information in the documents below. Do not use anything you know from elsewhere.
+- If the documents don't cover the question, say you don't have enough information. Do not guess.
+- Name the document your answer came from, using the filename given in each excerpt.
+- Be brief. Two or three sentences is usually enough.
+
+======================================================================
+The assembled prompt, exactly as sent
+======================================================================
+Documents:
+
+[from thread_first_year_regret.txt]
+THREAD: What do you wish you'd known in first year?
+
+--- reply 2 (28 votes) ---
+That you can take a course pass/fail and declare it late — up to week eight. I carried a grade I didn't need to.
+
+[from thread_first_gen.txt]
+THREAD: Anything specific for first-generation students?
+
+--- reply 2 (41 votes) ---
+The thing I'd say: the unwritten rules are the hard part, not the coursework. Ask about the unwritten rules explicitly. People are happy to explain them and nobody volunteers them.
+
+[from thread_first_year_regret.txt]
+THREAD: What do you wish you'd known in first year?
+
+--- reply 4 (52 votes) ---
+Honestly: that nobody is watching as closely as you think. I spent a year worried about looking like I knew what I was doing.
+
+[from thread_first_gen.txt]
+THREAD: Anything specific for first-generation students?
+
+--- reply 3 (16 votes) ---
+Emergency fund for textbooks and travel exists and is not means-tested beyond a short form.
+
+[from thread_changing_major.txt]
+THREAD: How hard is it to change major in second year?
+
+--- reply 3 (19 votes) ---
+Talk to the department adviser for the major you want, not your current one. They know the exceptions.
+
+---
+
+Question: What are some things I can do to make my freshmen year most memorable?
+
+Answer using only the documents above, and name the file you used.
+======================================================================
+
+I do not have enough information to answer what you can do to make your freshman year most memorable.
+
+Sources retrieved: thread_changing_major.txt, thread_first_gen.txt, thread_first_year_regret.txt
+
+0 model calls this session, 1 served from cache
+```
+     
+Appropriate chunks that would be able to answer the questions are retrieved. However, when its time to answer the question, an appropriate response is not formed. Therefore I would say the generation step is the issue.
+
+Issue is generation or retrieval. Maybe if it retrieved different chunks the AI would have a better time answering the question. Maybe the issue is embedding. The system might not be able to properly understand the question and parse the question to come up with an answer that would apply to it.
+
 ## The Improvement
 
-**What I changed:**
+**What I changed:** I decided to implement BM 25 for hybrid search. Use `--retrieval hybrid` to use the 2nd embedding model
 
-**Why I picked it:**
+**Why I picked it:** I had deduced that chunking was not the issue and that maybe the AI was simply understanding the question that it was being asked. Because of that it made sense to add a second embedding model.
 
 <!-- Connect it to a specific diagnosis above in one sentence. If you can't,
      you picked a fix because it sounded impressive. -->
@@ -260,15 +497,24 @@ I asked Claude where it would put the threshold cutoff based on the best distanc
 <!-- Same format, same five criteria, three runs each.
      `python run_eval.py --label after` -->
 
-| Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
+<!-- | Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
 | 1. Retrieved chunk contains the answer | 4 of 5 |  |  |  |  |
 | 2. Every answer names a source | 5 of 5 |  |  |  |  |
 | 3. Gate stops out-of-corpus questions | 4 of 5 |  |  |  |  |
 | 4. | | | | | |
-| 5. | | | | | |
+| 5. | | | | | | -->
 
-**Did it help?**
+| Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
+|---|---|---|---|---|---|
+| 1. Retrieved chunk contains the answer | 4 of 5 | 4/5 | 4/5 | 4/5 | MISSED |
+| 2. Every answer names a source | 5 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 3. Gate stops out-of-corpus questions | 4 of 5 | 5/5 | 5/5 | 5/5 | MET |
+| 4. The shortest chunk size should be over 10 characters | 5 of 5| 5/5| 5/5 | 5/5 | MET |
+| 5. All questions that pass the relevance gate should get answered.| 5 of 5 | 4/5 | 4/5 | 4/5 | MET |
+
+
+**Did it help?** No. Now the model is refusing to answer all question.
 
 <!-- Say plainly whether it did, and how you know. If it made things worse,
      say that — a change that backfired, honestly reported, earns full credit
@@ -286,6 +532,7 @@ I asked Claude where it would put the threshold cutoff based on the best distanc
      not.
 
      Milestone 5. -->
+I would have to revert this project to its previous state for it to improve. I think that I did not properly implement bm25 and I would have to do some more research in order to do so.
 
 ## What I'd Do Differently
 
@@ -293,3 +540,4 @@ I asked Claude where it would put the threshold cutoff based on the best distanc
      differently, and why?
 
      Milestone 5. -->
+I would rewrite Criteria 5. This is a project where I don't have any control over the generation step so creating such a criteria doesn't make sense. I'll keep that in mind for future project.

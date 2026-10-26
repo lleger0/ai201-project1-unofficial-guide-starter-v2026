@@ -160,12 +160,24 @@ def cmd_retrieve(args):
         print("Nothing came back. Have you run `python app.py index`?")
         return
 
-    print(f"\nQuestion: {args.question}\n")
-    print(f"{'#':<3} {'distance':<10} {'source':<32} preview")
-    print("-" * 100)
-    for i, r in enumerate(results, 1):
-        preview = r.text[:52].replace("\n", " ")
-        print(f"{i:<3} {r.distance:<10.4f} {r.source:<32} {preview}...")
+    hybrid = results[0].fused_score is not None
+
+    print(f"\nQuestion: {args.question}  [{config.RETRIEVAL} retrieval]\n")
+    if hybrid:
+        print(f"{'#':<3} {'distance':<10} {'bm25':<8} {'fused':<8} {'source':<32} preview")
+        print("-" * 118)
+        for i, r in enumerate(results, 1):
+            preview = r.text[:52].replace("\n", " ")
+            print(
+                f"{i:<3} {r.distance:<10.4f} {r.bm25_score:<8.2f} "
+                f"{r.fused_score:<8.4f} {r.source:<32} {preview}..."
+            )
+    else:
+        print(f"{'#':<3} {'distance':<10} {'source':<32} preview")
+        print("-" * 100)
+        for i, r in enumerate(results, 1):
+            preview = r.text[:52].replace("\n", " ")
+            print(f"{i:<3} {r.distance:<10.4f} {r.source:<32} {preview}...")
 
     decision = gate.check(results)
     print(f"\nGate: {decision.explanation}")
@@ -331,6 +343,11 @@ def build_parser():
         default="default",
         help="index variant, for holding two chunkings at once (unit 2)",
     )
+    parser.add_argument(
+        "--retrieval",
+        choices=["semantic", "hybrid"],
+        help="semantic = embeddings only; hybrid = embeddings + BM25 (default: config.RETRIEVAL)",
+    )
 
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -378,6 +395,8 @@ def build_parser():
 
 def main():
     args = build_parser().parse_args()
+    if args.retrieval:
+        config.RETRIEVAL = args.retrieval
     try:
         args.func(args)
     except KeyboardInterrupt:

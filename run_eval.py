@@ -76,7 +76,11 @@ def main():
     parser.add_argument("--variant", default="default")
     parser.add_argument("--top-k", type=int, default=None)
     parser.add_argument("--threshold", type=float, default=None)
+    parser.add_argument("--retrieval", choices=["semantic", "hybrid"], default=None)
     args = parser.parse_args()
+
+    if args.retrieval:
+        config.RETRIEVAL = args.retrieval
 
     corpus = args.corpus or config.CORPUS
     top_k = args.top_k or config.TOP_K
