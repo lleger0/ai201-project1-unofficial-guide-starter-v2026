@@ -173,6 +173,9 @@ I asked Claude where it would put the threshold cutoff based on the best distanc
 **3.**
 I used Claude code to rewrite chunker.py so that each chunk has a more defined goal.
 
+**4.**
+I used Claude code to implement bm25 after spending a couple hours trying to figure out how to do it myself. Unfortunately, I think claude might have made an error during the implementation.
+
 <!-- ── Stretch features ─────────────────────────────────────────────────────
      Doing one? Say so here BEFORE you start. A feature this README never
      claims earns nothing.
@@ -529,6 +532,7 @@ Issue is generation or retrieval. Maybe if it retrieved different chunks the AI 
      not.
 
      Milestone 5. -->
+I would have to revert this project to its previous state for it to improve. I think that I did not properly implement bm25 and I would have to do some more research in order to do so.
 
 ## What I'd Do Differently
 
@@ -536,3 +540,4 @@ Issue is generation or retrieval. Maybe if it retrieved different chunks the AI 
      differently, and why?
 
      Milestone 5. -->
+I would rewrite Criteria 5. This is a project where I don't have any control over the generation step so creating such a criteria doesn't make sense. I'll keep that in mind for future project.
